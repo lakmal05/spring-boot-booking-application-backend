@@ -20,7 +20,6 @@ import java.util.UUID;
 @Service
 public class FileService {
 
-
     @Value("${server.base-url}")
     private String baseUrl;
 
@@ -60,10 +59,17 @@ public class FileService {
             // Save the original file
             Files.copy(file.getInputStream(), originalPath);
 
-            // Compress and save different sizes
-            compressAndSave(file, smallPath, 200, 200);
-            compressAndSave(file, mediumPath, 400, 400);
-            compressAndSave(file, largePath, 800, 800);
+            // Compress and save different sizes for images
+            if (file.getContentType().startsWith("image")) {
+                compressAndSave(file, smallPath, 200, 200);
+                compressAndSave(file, mediumPath, 400, 400);
+                compressAndSave(file, largePath, 800, 800);
+            } else {
+                // For non-image files, simply copy without resizing
+                Files.copy(file.getInputStream(), smallPath);
+                Files.copy(file.getInputStream(), mediumPath);
+                Files.copy(file.getInputStream(), largePath);
+            }
 
             // Save metadata in database
             FileMetadata metadata = new FileMetadata();
@@ -83,7 +89,9 @@ public class FileService {
     private boolean isValidFile(String filename) {
         String extension = getExtension(filename);
         return extension.equalsIgnoreCase(".jpg") ||
+                extension.equalsIgnoreCase(".jpeg") ||
                 extension.equalsIgnoreCase(".png") ||
+                extension.equalsIgnoreCase(".gif") ||
                 extension.equalsIgnoreCase(".mp4");
     }
 
@@ -96,13 +104,8 @@ public class FileService {
             Thumbnails.of(file.getInputStream())
                     .size(width, height)
                     .toFile(path.toFile());
-        } else {
-            // For non-image files, simply copy without resizing
-            Files.copy(file.getInputStream(), path);
         }
     }
-
-
 
     public Resource loadFile(String size, String filename) throws Exception {
         Path filePath = Paths.get(UPLOAD_DIR, size, filename);
