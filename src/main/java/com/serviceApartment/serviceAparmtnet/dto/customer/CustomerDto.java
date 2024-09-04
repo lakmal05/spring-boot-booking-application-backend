@@ -1,8 +1,8 @@
-package com.serviceApartment.serviceAparmtnet.dto;
+package com.serviceApartment.serviceAparmtnet.dto.customer;
 
 import jakarta.validation.constraints.*;
 
-public class CustomerDTO {
+public class CustomerDto {
 
     @NotBlank(message = "Username cannot be blank")
     private String username;
