@@ -22,6 +22,7 @@ public class Comment {
     @Column(name = "commented_id")
     private Long commentedId;
 
+
     @Column(name = "commented_type")
     private String commentedType;
 
@@ -33,6 +34,7 @@ public class Comment {
 
     @Autowired
     private transient ImageRepository imageRepository;
+
 
     @PostLoad
     public void loadCommentedObject() {

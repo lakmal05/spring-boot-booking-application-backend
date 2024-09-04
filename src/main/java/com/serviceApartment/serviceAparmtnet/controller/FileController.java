@@ -35,14 +35,13 @@ public class FileController {
         }
     }
 
+
     @GetMapping("/{size}/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String size, @PathVariable String filename) {
         try {
             Resource resource = fileService.loadFile(size, filename);
             String contentType = Files.probeContentType(Paths.get(resource.getURI())); // Use the file's actual content type
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                    .contentType(MediaType.parseMediaType(contentType)) // Set content type dynamically
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"").contentType(MediaType.parseMediaType(contentType)) // Set content type dynamically
                     .body(resource);
         } catch (Exception e) {
             throw new CustomException("Sample Exception", HttpStatus.NOT_FOUND);
