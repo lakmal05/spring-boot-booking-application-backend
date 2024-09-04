@@ -1,5 +1,6 @@
 package com.serviceApartment.serviceAparmtnet.controller;
 
+import com.serviceApartment.serviceAparmtnet.exception.CustomException;
 import com.serviceApartment.serviceAparmtnet.model.FileMetadata;
 import com.serviceApartment.serviceAparmtnet.service.FileService;
 
@@ -44,7 +45,7 @@ public class FileController {
                     .contentType(MediaType.parseMediaType(contentType)) // Set content type dynamically
                     .body(resource);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            throw new CustomException("Sample Exception", HttpStatus.NOT_FOUND);
         }
     }
 
